@@ -17,6 +17,13 @@ class Panel(ScreenPanel):
     def __init__(self, screen, title):
         title = title or _("Z Calibrate")
         super().__init__(screen, title)
+        macros = {macro.lower() for macro in self._printer.get_gcode_macros()}
+        self.macro_commands = {
+            "Z_OFFSET_CALIBRATION": "Z_OFFSET_CALIBRATION" if "z_offset_calibration" in macros else None,
+            "ENDSTOPS_CALIBRATION": "ENDSTOPS_CALIBRATION" if "endstops_calibration" in macros else None,
+            "DELTA_CALIBRATION": "DELTA_CALIBRATION" if "delta_calibration" in macros else None,
+            "SECURITY_OFFSET": "SECURITY_OFFSET" if "security_offset" in macros else None,
+        }
         self.initialize_mesh_params()
         self.initialize_probe_params()
         self.setup_ui()
@@ -177,6 +184,9 @@ class Panel(ScreenPanel):
         if "DELTA_CALIBRATE" in self._printer.available_commands:
             commands.append({"DELTA_CALIBRATE"})
             commands.append({"DELTA_CALIBRATE METHOD=manual"})
+        for command in self.macro_commands.values():
+            if command:
+                commands.append({command})
         if "AXIS_TWIST_COMPENSATION_CALIBRATE" in self._printer.available_commands:
             commands.append({"AXIS_TWIST_COMPENSATION_CALIBRATE"})
 
@@ -211,6 +221,15 @@ class Panel(ScreenPanel):
             self._screen.show_popup_message("Unknown error with dropdown")
             return
         command = model[iterable][0]
+
+        if command in self.macro_commands.values():
+            self._screen._confirm_send_action(
+                None,
+                _("Start %s?") % command.replace("_", " ").title(),
+                "printer.gcode.script",
+                {"script": command},
+            )
+            return
 
         self.buttons["start"].set_sensitive(False)
         self.dropdown.set_sensitive(False)
