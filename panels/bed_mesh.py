@@ -37,9 +37,23 @@ class Panel(ScreenPanel):
         self.buttons["clear"].connect("clicked", self.send_clear_mesh)
         self.buttons["calib"].connect("clicked", self.calibrate_mesh)
 
+        if self.bed_leveling_macro:
+            self.buttons["level"] = self._gtk.Button(
+                "refresh", " " + _("Bed Level"), "color3", self.bts, Gtk.PositionType.LEFT, 1
+            )
+            self.buttons["level"].connect(
+                "clicked",
+                self._screen._confirm_send_action,
+                _("Please plug in leveling switch before auto-leveling."),
+                "printer.gcode.script",
+                {"script": self.bed_leveling_macro},
+            )
+
         topbar = Gtk.Box(spacing=5, hexpand=True, vexpand=False)
         topbar.add(self.buttons["add"])
         topbar.add(self.buttons["clear"])
+        if self.bed_leveling_macro:
+            topbar.add(self.buttons["level"])
         topbar.add(self.buttons["calib"])
 
         # Create a grid for all profiles
@@ -276,7 +290,7 @@ class Panel(ScreenPanel):
         self._screen._send_action(
             widget,
             "printer.gcode.script",
-            {"script": self.bed_leveling_macro or "BED_MESH_CALIBRATE"},
+            {"script": "BED_MESH_CALIBRATE"},
         )
 
     def send_clear_mesh(self, widget):

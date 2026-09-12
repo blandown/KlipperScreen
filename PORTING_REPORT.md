@@ -24,7 +24,7 @@ Git calculated the merge base as `2c8436500c0700a1f7968555d61813d41d10c10c`, mat
 | Safety offset | `panels/zcalibrate.py`, `SECURITY_OFFSET` | PORTED | Macro is offered and confirmed before sending. |
 | Native delta/manual calibration | old zcalibrate changes | ALREADY PROVIDED BY UPSTREAM | Current upstream already handles `DELTA_CALIBRATE` and `METHOD=manual`, round-bed mesh origin, and live status updates. |
 | FLSUN hotend/logo LEDs | `config/main_menu.conf`, `config/print_menu.conf` | PORTED | Added current menu entries using `printer.gcode.script`. |
-| Bed leveling macro | `panels/bed_mesh.py`, `BED_LEVELING` | PORTED | Current Bed Mesh panel uses the configured macro when present, otherwise native `BED_MESH_CALIBRATE`. |
+| Bed leveling macro | `panels/bed_mesh.py`, `BED_LEVELING` | PORTED | Current Bed Mesh panel exposes separate `Bed Level` (the tutorial's first macro workflow) and `Calibrate` (`BED_MESH_CALIBRATE`) buttons. |
 | PID start/end wrappers | `panels/main_menu.py`, `panels/temperature.py`, `_PID_KS_START` / `_PID_KS_END` | PORTED | Current PID commands are wrapped only when both configured macros exist. |
 | Print LED lifecycle | `panels/job_status.py`, `LED_HOTEND_OFF` / `NEOPIXEL_ON` | PORTED | Current websocket API sends the optional commands on cancel/close. |
 | PID macro panel | `panels/pid.py`, `PID_HOTEND` / `PID_BED` | PORTED | Added a small current-API panel; absent macros disable their buttons. |
@@ -62,6 +62,6 @@ The final source remains a small additive patch over upstream and has remotes `u
 
 ## Follow-up audit
 
-A second pass searched the fork's explicit `# Changes` markers and compared the affected behavior against current upstream. The additional FLSUN/configuration behaviors found were Bed Mesh's `BED_LEVELING` macro, PID start/end wrappers, print-cancel LED shutdown, print-panel NeoPixel restoration, and the V400 extrusion speed limit; these are now ported in current files. The tutorial menu path was also corrected to expose the standalone Endstop Calibration entry.
+A second pass searched the fork's explicit `# Changes` markers and compared the affected behavior against current upstream. The additional FLSUN/configuration behaviors found were Bed Mesh's separate `BED_LEVELING` workflow, PID start/end wrappers, print-cancel LED shutdown, print-panel NeoPixel restoration, and the V400 extrusion speed limit; these are now ported in current files. The tutorial menu path was also corrected to expose the standalone Endstop Calibration entry.
 
 The remaining fork-only markers are not missing V400 functionality: Pad7 touch sound, old display/layout spacing, translation/catalog churn, unrelated theme redesigns, generic UI rearrangements, old installer/policy changes, and obsolete Moonraker/screen rewrites. They are intentionally not copied because they are unrelated to V400 behavior or would replace current upstream implementations.
