@@ -176,6 +176,9 @@ class Panel(ScreenPanel):
     def set_commands(self):
         commands = Gtk.ListStore(str)
 
+        for command in self.macro_commands.values():
+            if command:
+                commands.append({command})
         if "PROBE_CALIBRATE" in self._printer.available_commands:
             commands.append({"PROBE_CALIBRATE"})
         if "Z_ENDSTOP_CALIBRATE" in self._printer.available_commands:
@@ -185,9 +188,6 @@ class Panel(ScreenPanel):
         if "DELTA_CALIBRATE" in self._printer.available_commands:
             commands.append({"DELTA_CALIBRATE"})
             commands.append({"DELTA_CALIBRATE METHOD=manual"})
-        for command in self.macro_commands.values():
-            if command:
-                commands.append({command})
         if "AXIS_TWIST_COMPENSATION_CALIBRATE" in self._printer.available_commands:
             commands.append({"AXIS_TWIST_COMPENSATION_CALIBRATE"})
 
