@@ -56,6 +56,8 @@ The fork's live communication, old Moonraker client, old service installer, old 
 
 ## Compatibility concerns
 
+- The supplied `Klipper-Flsun-Speeder-Pad-main.zip` Robin Nano Stock configuration does not implement the wiki's manual paper-test storage format. Its `Z_OFFSET_CALIBRATION` macro calls `PROBE_CALIBRATE`, and its `SET_GCODE_OFFSET` macro saves `VARIABLE=zoffset`; therefore it correctly produces `[probe] z_offset` plus `zoffset` in `variables.cfg`, not `gcode_offsets`. The wiki workflow requires a separate `MOVE_TO_Z0` macro and a `SET_GCODE_OFFSET` implementation that saves `VARIABLE=gcode_offsets`. KlipperScreen cannot change that printer-side storage format.
+
 Actual Speeder Pad validation is still required. Confirm its OS provides the current upstream Python/GTK/PyGObject requirements, uses the expected X11/Wayland backend, and has a working systemd service. Confirm the exact macro names in the V400 printer configuration, especially `ENDSTOPS_CALIBRATION`, `DELTA_CALIBRATION`, `SECURITY_OFFSET`, `PID_HOTEND`, and `PID_BED`. Calibration macros must themselves contain safe homing, probe insertion/removal, and `SAVE_CONFIG` behavior appropriate to the installed hardware.
 
 The final source remains a small additive patch over upstream and has remotes `upstream` and `guilouz`, so future upstream updates can be rebased with the FLSUN-specific files and hunks isolated.
