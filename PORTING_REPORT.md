@@ -19,7 +19,7 @@ Git calculated the merge base as `2c8436500c0700a1f7968555d61813d41d10c10c`, mat
 | V400 move speeds and babystep increments | `ks_includes/defaults.conf`, `[printer FLSUN V400]` | PORTED | Added to current `config/defaults.conf`. |
 | V400 preheat defaults | `ks_includes/defaults.conf` | PORTED | PLA/ABS defaults updated in current defaults. |
 | Macro Z-offset calibration | `panels/zcalibrate.py`, `Z_OFFSET_CALIBRATION` | PORTED | Current zcalibrate discovers the macro through current `Printer.get_gcode_macros()` and sends it through current websocket API. |
-| Endstop Phase workflow | `panels/zcalibrate.py`, `ENDSTOPS_CALIBRATION` | PORTED | Same current panel and API; only configured macros are offered. |
+| Endstop Phase workflow | `panels/zcalibrate.py`, `config/main_menu.conf`, `ENDSTOPS_CALIBRATION` | PORTED | Standalone `Configurations -> Calibrations -> Endstop Calibration` entry plus the current panel dropdown; only configured macros are offered. |
 | Automatic delta workflow | `panels/zcalibrate.py`, `DELTA_CALIBRATION` | PORTED | Macro is offered alongside upstream's native `DELTA_CALIBRATE`. |
 | Safety offset | `panels/zcalibrate.py`, `SECURITY_OFFSET` | PORTED | Macro is offered and confirmed before sending. |
 | Native delta/manual calibration | old zcalibrate changes | ALREADY PROVIDED BY UPSTREAM | Current upstream already handles `DELTA_CALIBRATE` and `METHOD=manual`, round-bed mesh origin, and live status updates. |
@@ -41,7 +41,7 @@ No Guilouz translations or old theme trees were copied. Current upstream's trans
 
 - `panels/zcalibrate.py`: optional macro discovery and dispatch, retaining all current upstream calibration behavior.
 - `panels/pid.py`: minimal PID macro panel using current GTK/screen APIs.
-- `config/main_menu.conf`: FLSUN LED and PID entries.
+- `config/main_menu.conf`: tutorial-compatible `Configurations -> Calibrations` hierarchy, Endstop Calibration entry, FLSUN LED and PID entries.
 - `config/print_menu.conf`: FLSUN LED entries while printing.
 - `config/defaults.conf`: V400 motion/babystep and preheat defaults.
 - `styles/printers/FLSUN Q5.svg`, `FLSUN QQSP.svg`, `FLSUN SR.svg`, `FLSUN V400.svg`: printer-select assets.
