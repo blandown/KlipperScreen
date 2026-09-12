@@ -35,6 +35,11 @@ class Panel(ScreenPanel):
         self.grid = Gtk.Grid(row_homogeneous=True, column_homogeneous=True)
         self._gtk.reset_temp_color()
         self.extra_selection = kwargs.get("extra", None)
+        macros = {
+            section[12:].strip().lower()
+            for section in self._printer.get_config_section_list("gcode_macro ")
+        }
+        self.pid_wrapper = "_PID_KS_START" in macros and "_PID_KS_END" in macros
         self.numpad_visible = False
 
         if self._screen.vertical_mode:
@@ -479,7 +484,10 @@ class Panel(ScreenPanel):
             return
         heater = self.active_heater.split(" ", maxsplit=1)[-1]
         if self.verify_max_temp(temp):
-            script = {"script": f"PID_CALIBRATE HEATER={heater} TARGET={temp}"}
+            command = f"PID_CALIBRATE HEATER={heater} TARGET={temp}"
+            if self.pid_wrapper:
+                command = f"_PID_KS_START\n{command}\n_PID_KS_END"
+            script = {"script": command}
             self._screen._confirm_send_action(
                 None,
                 _("Initiate a PID calibration for:")

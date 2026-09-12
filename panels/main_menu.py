@@ -25,6 +25,11 @@ class Panel(MenuPanel):
         )
         self.menu_scroll = self._gtk.ScrolledWindow()
         self.numpad_visible = False
+        macros = {
+            section[12:].strip().lower()
+            for section in self._printer.get_config_section_list("gcode_macro ")
+        }
+        self.pid_wrapper = "_pid_ks_start" in macros and "_pid_ks_end" in macros
 
         logging.info("### Making MainMenu")
 
@@ -224,7 +229,10 @@ class Panel(MenuPanel):
             return
         heater = self.active_heater.split(" ", maxsplit=1)[-1]
         if self.verify_max_temp(temp):
-            script = {"script": f"PID_CALIBRATE HEATER={heater} TARGET={temp}"}
+            command = f"PID_CALIBRATE HEATER={heater} TARGET={temp}"
+            if self.pid_wrapper:
+                command = f"_PID_KS_START\n{command}\n_PID_KS_END"
+            script = {"script": command}
             self._screen._confirm_send_action(
                 None,
                 _("Initiate a PID calibration for:")

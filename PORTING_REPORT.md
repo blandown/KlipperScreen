@@ -24,6 +24,9 @@ Git calculated the merge base as `2c8436500c0700a1f7968555d61813d41d10c10c`, mat
 | Safety offset | `panels/zcalibrate.py`, `SECURITY_OFFSET` | PORTED | Macro is offered and confirmed before sending. |
 | Native delta/manual calibration | old zcalibrate changes | ALREADY PROVIDED BY UPSTREAM | Current upstream already handles `DELTA_CALIBRATE` and `METHOD=manual`, round-bed mesh origin, and live status updates. |
 | FLSUN hotend/logo LEDs | `config/main_menu.conf`, `config/print_menu.conf` | PORTED | Added current menu entries using `printer.gcode.script`. |
+| Bed leveling macro | `panels/bed_mesh.py`, `BED_LEVELING` | PORTED | Current Bed Mesh panel uses the configured macro when present, otherwise native `BED_MESH_CALIBRATE`. |
+| PID start/end wrappers | `panels/main_menu.py`, `panels/temperature.py`, `_PID_KS_START` / `_PID_KS_END` | PORTED | Current PID commands are wrapped only when both configured macros exist. |
+| Print LED lifecycle | `panels/job_status.py`, `LED_HOTEND_OFF` / `NEOPIXEL_ON` | PORTED | Current websocket API sends the optional commands on cancel/close. |
 | PID macro panel | `panels/pid.py`, `PID_HOTEND` / `PID_BED` | PORTED | Added a small current-API panel; absent macros disable their buttons. |
 | FLSUN printer icons | `styles/printers/FLSUN *.svg` | PORTED | Copied the four model icons supported by current printer-select theming. |
 | GTK dropdown workaround, old busy handling, screen/network changes | `zcalibrate.py`, `screen.py`, `ks_includes/*` | INTENTIONALLY OMITTED | Current upstream has `ComboBoxPlus`, modern lifecycle/status handling, and the communication architecture. Carrying old code would reintroduce the reported static-GUI failure mode. |
@@ -40,6 +43,7 @@ No Guilouz translations or old theme trees were copied. Current upstream's trans
 ## Files changed on `v400-modern`
 
 - `panels/zcalibrate.py`: optional macro discovery and dispatch, retaining all current upstream calibration behavior.
+- `panels/bed_mesh.py`, `panels/temperature.py`, `panels/job_status.py`: optional FLSUN macro integrations using current APIs.
 - `panels/pid.py`: minimal PID macro panel using current GTK/screen APIs.
 - `config/main_menu.conf`: tutorial-compatible `Configurations -> Calibrations` hierarchy, Endstop Calibration entry, FLSUN LED and PID entries.
 - `config/print_menu.conf`: FLSUN LED entries while printing.
@@ -55,3 +59,9 @@ The fork's live communication, old Moonraker client, old service installer, old 
 Actual Speeder Pad validation is still required. Confirm its OS provides the current upstream Python/GTK/PyGObject requirements, uses the expected X11/Wayland backend, and has a working systemd service. Confirm the exact macro names in the V400 printer configuration, especially `ENDSTOPS_CALIBRATION`, `DELTA_CALIBRATION`, `SECURITY_OFFSET`, `PID_HOTEND`, and `PID_BED`. Calibration macros must themselves contain safe homing, probe insertion/removal, and `SAVE_CONFIG` behavior appropriate to the installed hardware.
 
 The final source remains a small additive patch over upstream and has remotes `upstream` and `guilouz`, so future upstream updates can be rebased with the FLSUN-specific files and hunks isolated.
+
+## Follow-up audit
+
+A second pass searched the fork's explicit `# Changes` markers and compared the affected behavior against current upstream. The additional FLSUN/configuration behaviors found were Bed Mesh's `BED_LEVELING` macro, PID start/end wrappers, print-cancel LED shutdown, print-panel NeoPixel restoration, and the V400 extrusion speed limit; these are now ported in current files. The tutorial menu path was also corrected to expose the standalone Endstop Calibration entry.
+
+The remaining fork-only markers are not missing V400 functionality: Pad7 touch sound, old display/layout spacing, translation/catalog churn, unrelated theme redesigns, generic UI rearrangements, old installer/policy changes, and obsolete Moonraker/screen rewrites. They are intentionally not copied because they are unrelated to V400 behavior or would replace current upstream implementations.

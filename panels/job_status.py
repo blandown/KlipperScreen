@@ -53,6 +53,9 @@ class Panel(ScreenPanel):
         self.time_grid = None
         self.extrusion_grid = None
         self.idex = False
+        macros = {macro.lower() for macro in self._printer.get_gcode_macros()}
+        self.turn_off_hotend_led = "led_hotend_off" in macros
+        self.restore_neopixel = "neopixel_on" in macros
 
         data = [
             "pos_x",
@@ -515,10 +518,14 @@ class Panel(ScreenPanel):
         self.set_state("cancelling")
         self.disable_button("pause", "resume", "cancel")
         self._screen._ws.api.print_cancel()
+        if self.turn_off_hotend_led:
+            self._screen._ws.api.gcode_script("LED_HOTEND_OFF")
 
     def close_panel(self, widget=None):
         if self.can_close:
             logging.debug("Closing job_status panel")
+            if self.restore_neopixel:
+                self._screen._ws.api.gcode_script("NEOPIXEL_ON")
             self._screen.state_ready(wait=False)
 
     def enable_button(self, *args):

@@ -15,6 +15,8 @@ class Panel(ScreenPanel):
     def __init__(self, screen, title):
         title = title or _("Bed Mesh")
         super().__init__(screen, title)
+        macros = {macro.lower() for macro in self._printer.get_gcode_macros()}
+        self.bed_leveling_macro = "BED_LEVELING" if "bed_leveling" in macros else None
         self.show_create = False
         self.active_mesh = None
         section = self._printer.get_config_section("bed_mesh")
@@ -271,7 +273,11 @@ class Panel(ScreenPanel):
             self._printer.get_stat("quad_gantry_level", "applied")
         ):
             self._screen._ws.api.gcode_script("QUAD_GANTRY_LEVEL")
-        self._screen._send_action(widget, "printer.gcode.script", {"script": "BED_MESH_CALIBRATE"})
+        self._screen._send_action(
+            widget,
+            "printer.gcode.script",
+            {"script": self.bed_leveling_macro or "BED_MESH_CALIBRATE"},
+        )
 
     def send_clear_mesh(self, widget):
         self._screen._send_action(widget, "printer.gcode.script", {"script": "BED_MESH_CLEAR"})
