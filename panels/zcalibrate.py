@@ -19,6 +19,7 @@ class Panel(ScreenPanel):
         super().__init__(screen, title)
         macros = {macro.lower() for macro in self._printer.get_gcode_macros()}
         self.macro_commands = {
+            "MOVE_TO_Z0": "MOVE_TO_Z0" if "move_to_z0" in macros else None,
             "Z_OFFSET_CALIBRATION": "Z_OFFSET_CALIBRATION" if "z_offset_calibration" in macros else None,
             "ENDSTOPS_CALIBRATION": "ENDSTOPS_CALIBRATION" if "endstops_calibration" in macros else None,
             "DELTA_CALIBRATION": "DELTA_CALIBRATION" if "delta_calibration" in macros else None,

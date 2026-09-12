@@ -18,7 +18,7 @@ Git calculated the merge base as `2c8436500c0700a1f7968555d61813d41d10c10c`, mat
 |---|---|---|---|
 | V400 move speeds and babystep increments | `ks_includes/defaults.conf`, `[printer FLSUN V400]` | PORTED | Added to current `config/defaults.conf`. |
 | V400 preheat defaults | `ks_includes/defaults.conf` | PORTED | PLA/ABS defaults updated in current defaults. |
-| Macro Z-offset calibration | `panels/zcalibrate.py`, `Z_OFFSET_CALIBRATION` | PORTED | Current zcalibrate discovers the macro through current `Printer.get_gcode_macros()` and sends it through current websocket API. |
+| Macro Z-offset calibration | `panels/zcalibrate.py`, `Z_OFFSET_CALIBRATION` / `MOVE_TO_Z0` | PORTED | Current zcalibrate exposes both the probe-calibration macro and the tutorial's manual paper-test entry when configured; they are intentionally separate because they save different values. |
 | Endstop Phase workflow | `panels/zcalibrate.py`, `config/main_menu.conf`, `ENDSTOPS_CALIBRATION` | PORTED | Standalone `Configurations -> Calibrations -> Endstop Calibration` entry plus the current panel dropdown; only configured macros are offered. |
 | Automatic delta workflow | `panels/zcalibrate.py`, `DELTA_CALIBRATION` | PORTED | Macro is offered alongside upstream's native `DELTA_CALIBRATE`. |
 | Safety offset | `panels/zcalibrate.py`, `SECURITY_OFFSET` | PORTED | Macro is offered and confirmed before sending. |
